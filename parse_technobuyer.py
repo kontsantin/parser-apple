@@ -59,16 +59,13 @@ def parse_product_page(url):
         features[key] = val
 
     images = []
-    seen_img_bases = set()
+    seen_img_urls = set()
     for m in re.finditer(r'href="(/wa-data/public/shop/products/.*?\.(?:jpg|png))"', text):
         img_url = urljoin(BASE, m.group(1))
-        # Убираем size-суффикс (.970, .96x96) — Яндекс требует оригиналы
-        original = re.sub(r'\.\d+(?:x\d+)?(?=\.(?:jpg|png))', '', img_url)
-        base = re.sub(r'\.(?:jpg|png)$', '', original)
-        if base in seen_img_bases:
+        if img_url in seen_img_urls:
             continue
-        seen_img_bases.add(base)
-        images.append(original)
+        seen_img_urls.add(img_url)
+        images.append(img_url)
 
     desc_match = re.search(r'<meta\s+name="description"\s+content="([^"]+)"', text)
     desc = html_mod.unescape(desc_match.group(1)) if desc_match else ""
@@ -260,7 +257,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
             v["stock"],                     # Склад: Склад №1
             "", "", "",                     # Внешние ID (1C, МойСклад, WB)
             "", "", "",                     # Внешние ID (Ozon, YML, Яндекс.Маркет)
-            "",                             # Изображения и видео — без внешних ссылок
+            " ".join(v.get("images", [])[:10]),  # Изображения и видео
             "",                             # Ссылки на файлы
             "",                             # Бейджи
             "",                             # Количество упаковок

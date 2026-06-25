@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2026-06-25T14:34:15+03:00">
+  <shop>
+    <name>Techno Buyer</name>
+    <company>Techno Buyer</company>
+    <url>https://techno-buyer.ru</url>
+    <email>info@techno-buyer.ru</email>
+    <phone>+7 (909) 964-77-74</phone>
+    <currencies>
+      <currency id="RUB" rate="1"/>
+    </currencies>
+    <categories>
+      <category id="1">Смартфоны</category>
+      <category id="2" parentId="1">Apple iPhone</category>
+      <category id="3" parentId="2">Apple iPhone 17 Pro</category>
+    </categories>
+    <offers>
+      <offer id="MS-1-1642" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-1tb-bez-rustore-oranzhevyy-2/</url>
+        <price>121690</price>
+        <oldprice>160650</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/78/17/1778/images/8986/8986.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/78/17/1778/images/8987/8987.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/78/17/1778/images/8988/8988.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/78/17/1778/images/8989/8989.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1642</vendorCode>
+        <description>iPhone 17 Pro 1Tb, eSIM, без RuStore (Оранжевый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">оранжевый</param>
+        <param name="Объём встроенной памяти">1024 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1491" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-1tb-belyy/</url>
+        <price>131490</price>
+        <oldprice>183500</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/15/1585/images/8512/8512.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/15/1585/images/8513/8513.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/15/1585/images/8514/8514.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/15/1585/images/8515/8515.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1491</vendorCode>
+        <description>iPhone 17 Pro 1Tb, SIM + eSIM, без RuStore (Серебристый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">серебристый</param>
+        <param name="Объём встроенной памяти">1024 ГБ</param>
+        <param name="Тип связи">SIM + eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1643" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-1tb-bez-rustore-serebristyy-2/</url>
+        <price>126390</price>
+        <oldprice>132000</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/79/17/1779/images/8990/8990.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/79/17/1779/images/8991/8991.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/79/17/1779/images/8992/8992.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/79/17/1779/images/8993/8993.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1643</vendorCode>
+        <description>iPhone 17 Pro 1Tb, eSIM, без RuStore (Серебристый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">серебристый</param>
+        <param name="Объём встроенной памяти">1024 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1644" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-1tb-bez-rustore-siniy-2/</url>
+        <price>125490</price>
+        <oldprice>160650</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/80/17/1780/images/8994/8994.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/80/17/1780/images/8995/8995.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/80/17/1780/images/8996/8996.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/80/17/1780/images/8997/8997.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1644</vendorCode>
+        <description>iPhone 17 Pro 1Tb, eSIM, без RuStore (Синий). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">синий</param>
+        <param name="Объём встроенной памяти">1024 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1490" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-1tb-oranzhevyy/</url>
+        <price>131490</price>
+        <oldprice>183500</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/15/1584/images/8508/8508.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/15/1584/images/8509/8509.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/15/1584/images/8510/8510.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/15/1584/images/8511/8511.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1490</vendorCode>
+        <description>iPhone 17 Pro 1Tb, SIM + eSIM, без RuStore (Оранжевый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 12 Мп + 12 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">оранжевый</param>
+        <param name="Объём встроенной памяти">1024 ГБ</param>
+        <param name="Тип связи">SIM + eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 12 Мп + 12 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1489" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-1tb-siniy/</url>
+        <price>131590</price>
+        <oldprice>183500</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/15/1583/images/8516/8516.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/15/1583/images/8517/8517.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/15/1583/images/8518/8518.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/15/1583/images/8519/8519.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1489</vendorCode>
+        <description>iPhone 17 Pro 1Tb, SIM + eSIM, без RuStore (Синий). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">синий</param>
+        <param name="Объём встроенной памяти">1024 ГБ</param>
+        <param name="Тип связи">SIM + eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1645" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-256gb-bez-rustore-oranzhevyy-2/</url>
+        <price>84490</price>
+        <oldprice>122990</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/81/17/1781/images/8998/8998.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/81/17/1781/images/8999/8999.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/81/17/1781/images/9000/9000.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/81/17/1781/images/9001/9001.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1645</vendorCode>
+        <description>iPhone 17 Pro 256Gb, eSIM, без RuStore (Оранжевый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">оранжевый</param>
+        <param name="Объём встроенной памяти">256 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1646" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-256gb-bez-rustore-serebristyy-2/</url>
+        <price>86990</price>
+        <oldprice>125340</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/82/17/1782/images/9002/9002.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/82/17/1782/images/9003/9003.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/82/17/1782/images/9004/9004.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/82/17/1782/images/9005/9005.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1646</vendorCode>
+        <description>iPhone 17 Pro 256Gb, eSIM, без RuStore (Серебристый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">серебристый</param>
+        <param name="Объём встроенной памяти">256 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1647" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-256gb-bez-rustore-siniy-2/</url>
+        <price>87390</price>
+        <oldprice>122990</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/17/1783/images/9006/9006.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/17/1783/images/9007/9007.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/17/1783/images/9008/9008.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/83/17/1783/images/9009/9009.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1647</vendorCode>
+        <description>iPhone 17 Pro 256Gb, eSIM, без RuStore (Синий). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">синий</param>
+        <param name="Объём встроенной памяти">256 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1648" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-512gb-bez-rustore-oranzhevyy-2/</url>
+        <price>103990</price>
+        <oldprice>143000</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/17/1784/images/9010/9010.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/17/1784/images/9011/9011.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/17/1784/images/9012/9012.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/84/17/1784/images/9013/9013.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1648</vendorCode>
+        <description>iPhone 17 Pro 512Gb, eSIM, без RuStore (Оранжевый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">оранжевый</param>
+        <param name="Объём встроенной памяти">512 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1649" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-512gb-bez-rustore-serebristyy-2/</url>
+        <price>103890</price>
+        <oldprice>153590</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/17/1785/images/9014/9014.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/17/1785/images/9015/9015.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/17/1785/images/9016/9016.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/85/17/1785/images/9017/9017.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1649</vendorCode>
+        <description>iPhone 17 Pro 512Gb, eSIM, без RuStore (Серебристый). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">серебристый</param>
+        <param name="Объём встроенной памяти">512 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+      <offer id="MS-1-1650" available="true" group_id="1782380055062">
+        <url>https://techno-buyer.ru/iphone-17-pro-512gb-bez-rustore-siniy-2/</url>
+        <price>103890</price>
+        <oldprice>143000</oldprice>
+        <currencyId>RUB</currencyId>
+        <categoryId>3</categoryId>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/86/17/1786/images/9018/9018.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/86/17/1786/images/9083/9083.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/86/17/1786/images/9084/9084.jpg</picture>
+        <picture>https://techno-buyer.ru/wa-data/public/shop/products/86/17/1786/images/9085/9085.jpg</picture>
+        <name>iPhone 17 Pro</name>
+        <vendor>Techno Buyer</vendor>
+        <vendorCode>MS-1-1650</vendorCode>
+        <description>iPhone 17 Pro 512Gb, eSIM, без RuStore (Синий). Процессор A19 Pro, дисплей 6.3 дюйм (ProMotion с адаптивной частотой обновления до 120 Гц, True Tone), камера 48 Мп + 48 Мп + 48 Мп, защита IP68.</description>
+        <barcode/>
+        <weight>0.206</weight>
+        <param name="Бренд">Techno Buyer</param>
+        <param name="Серия">iPhone 17 Pro</param>
+        <param name="Модель">iPhone 17 Pro</param>
+        <param name="Цвет">синий</param>
+        <param name="Объём встроенной памяти">512 ГБ</param>
+        <param name="Тип связи">eSIM</param>
+        <param name="Диагональ экрана">6.3"</param>
+        <param name="Процессор">A19 Pro</param>
+        <param name="Основная камера">48 Мп + 48 Мп + 48 Мп</param>
+        <param name="Фронтальная камера">18 Мп</param>
+        <param name="Защита от воды">IP68</param>
+        <param name="ОС">iOS</param>
+        <param name="Разъём">USB Type-C</param>
+        <param name="Вес">206 г</param>
+        <param name="Год модели">2025</param>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>

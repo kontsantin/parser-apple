@@ -1,0 +1,5 @@
+# Вставляй ссылки на товары techno-buyer.ru (по одной на строку)
+# Строки с # — это комментарии, они игнорируются
+# Запуск: python parse_technobuyer.py --file urls.txt
+
+https://techno-buyer.ru/iphone-17-pro-1tb-bez-rustore-oranzhevyy-2/

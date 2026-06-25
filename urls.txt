@@ -1,5 +1,101 @@
-# Вставляй ссылки на товары techno-buyer.ru (по одной на строку)
-# Строки с # — это комментарии, они игнорируются
-# Запуск: python parse_technobuyer.py --file urls.txt
+# URLs для парсинга techno-buyer.ru
+# По одному URL на модель — парсер сам найдёт все варианты
 
-https://techno-buyer.ru/iphone-17-pro-1tb-bez-rustore-oranzhevyy-2/
+# Apple iPhone 17 Pro Max
+https://techno-buyer.ru/iphone-17-pro-max-256gb-bez-rustore-oranzhevyy-2/
+
+# Apple iPhone 17 Pro
+https://techno-buyer.ru/iphone-17-pro-256gb-bez-rustore-oranzhevyy-2/
+
+# Apple iPhone 17e
+https://techno-buyer.ru/iphone-17e-256gb-sim-esim-bez-rustore-rozovyy/
+
+# Apple iPhone 17 Air
+https://techno-buyer.ru/iphone-17-air-256gb-zolotoy/
+
+# Apple iPhone 17
+https://techno-buyer.ru/iphone-17-256gb-bez-rustore-goluboy-2/
+
+# Apple iPhone 16 Pro Max
+https://techno-buyer.ru/iphone-16-pro-max-256gb-sim-esim-pustynnyy-titan/
+
+# Apple iPhone 16 Pro
+https://techno-buyer.ru/iphone-16-pro-128gb-sim-esim-titanovyy-belyy/
+
+# Apple iPhone 16 Plus
+https://techno-buyer.ru/iphone-16-plus-128gb-sim-esim-ultramarin/
+
+# Apple iPhone 16e
+https://techno-buyer.ru/iphone-16-128gb-sim-esim-belyy-2/
+
+# Apple iPhone 16
+https://techno-buyer.ru/iphone-16-128gb-sim-esim-bez-rustore-chernyy-2/
+
+# MacBook Neo (2026)
+https://techno-buyer.ru/macbook-neo-13-a18-pro-8gb-256gb-ssd-siniy/
+
+# MacBook Pro 16" M5 Max (2026)
+https://techno-buyer.ru/macbook-pro-16-m5-max-36gb-2tb-ssd-chernyy-kosmos/
+
+# MacBook Pro 16" M5 Pro (2026)
+https://techno-buyer.ru/macbook-pro-16-m5-pro-24gb-1tb-ssd-chernyy-kosmos/
+
+# MacBook Pro 14" M5 (2025)
+https://techno-buyer.ru/macbook-pro-14-m5-16gb-512gb-ssd-chernyy-kosmos/
+
+# MacBook Pro 16" M4 Pro (2024)
+https://techno-buyer.ru/macbook-pro-16-m4-pro-48gb-512gb-ssd-serebristyy/
+
+# MacBook Pro 14" M5 Max (2026)
+https://techno-buyer.ru/macbook-pro-14-m5-max-18c-cpu-40c-gpu-64gb-2tb-ssd-chernyy-kosmos-z1mn000v2/
+
+# MacBook Pro 14" M5 Pro (2026)
+https://techno-buyer.ru/macbook-pro-14-m5-pro-15c-cpu-16c-gpu-24gb-1tb-ssd-serebristyy-mgdn4/
+
+# MacBook Pro 14" M4 Pro (2024)
+https://techno-buyer.ru/macbook-pro-14-m4-pro-24gb-1tb-ssd-serebristyy/
+
+# MacBook Pro 14" M4 (2024)
+https://techno-buyer.ru/macbook-pro-14-m4-chernyy-kosmos/
+
+# MacBook Air 15" M5 (2026)
+https://techno-buyer.ru/macbook-air-15-m5-16gb-512gb-ssd-siyayushchaya-zvezda/
+
+# MacBook Air 15" M4 (2025)
+https://techno-buyer.ru/macbook-air-15-m4-16gb-512gb-ssd-serebristyy/
+
+# MacBook Air 13" M5 (2026)
+https://techno-buyer.ru/macbook-air-13-m5-16gb-512gb-ssd-siyayushchaya-zvezda/
+
+# MacBook Air 13" M4 (2025)
+https://techno-buyer.ru/macbook-air-13-m4-16gb-512gb-ssd-polunochnyi-chernyi/
+
+# Apple iPad Pro 13" M5 (2025)
+https://techno-buyer.ru/ipad-pro-2025-13-2tb-wi-fi-cellular-nanoteksturnoe-steklo-bez-rustore-serebristyy/
+
+# Apple iPad Pro 11" M5 (2025)
+https://techno-buyer.ru/ipad-pro-2025-11-2tb-wi-fi-cellular-nanoteksturnoe-steklo-bez-rustore-chernyy-kosmos/
+
+# Apple iPad 11" (2025)
+https://techno-buyer.ru/ipad-2025-11-512gb-wi-fi-bez-rustore-siniy/
+
+# Apple iPad Pro 13" M4 (2024)
+https://techno-buyer.ru/ipad-pro-2024-13-256gb-wi-fi-chernyy-kosmos/
+
+# Apple iPad Pro 11" M4 (2024)
+https://techno-buyer.ru/ipad-pro-2024-11-256gb-wi-fi-cellular-serebristyy/
+
+# Apple iPad Air 13" (2025)
+https://techno-buyer.ru/ipad-air-2024-13-1tb-wi-fi-seryy-kosmos-1/
+
+# Apple iPad Air 11" (2025)
+https://techno-buyer.ru/ipad-air-2025-11-128gb-wi-fi-cellular-fioletovyy/
+
+# Apple iPad Air 13" (2024)
+https://techno-buyer.ru/ipad-air-2024-13-128gb-wi-fi-seryy-kosmos/
+
+# Apple iPad Air 11" (2024)
+https://techno-buyer.ru/ipad-air-2024-11-256gb-wi-fi-cellular-fioletovyy/
+
+# Apple iPad mini (2024)
+https://techno-buyer.ru/ipad-mini-2024-256gb-wi-fi-siniy/

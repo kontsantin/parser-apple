@@ -542,8 +542,6 @@ def generate_yandex_market_yml(variants, output_path):
     SubElement(shop, "name").text = "Apple"
     SubElement(shop, "company").text = "Apple"
     SubElement(shop, "url").text = "https://www.apple.com"
-    SubElement(shop, "email").text = ""
-    SubElement(shop, "phone").text = "+7 (909) 964-77-74"
 
     currencies = SubElement(shop, "currencies")
     SubElement(currencies, "currency", {"id": "RUB", "rate": "1"})

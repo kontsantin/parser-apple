@@ -404,7 +404,12 @@ def generate_yandex_kit_xlsx(variants, output_path):
         )
         if all_have("Связь"):
             return ["Цвет", "Объём встроенной памяти", "Тип связи"]
-        if not _is_macbook and all_have("Процессор"):
+        if _is_macbook:
+            base = ["Цвет", "Объём встроенной памяти"]
+            if all_have("Оперативная память"):
+                base.append("Оперативная память")
+            return base
+        if all_have("Процессор"):
             processors = {v["features"].get("Процессор", "") for v in group_variants}
             if len(processors) > 1:
                 return ["Цвет", "Объём встроенной памяти", "Процессор"]
@@ -474,7 +479,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 group_id,                       # Объединять по (Group ID)
                 grouping_chars_str,             # Группирующие характеристики
                 "",                             # Разделять на карточки по
-                v.get("brand") or f.get("Бренд", "Apple"),  # Бренд
+                f.get("Бренд", "Apple"),  # Бренд
                 _category(v)[0],                # Категория 1-го уровня*
                 _category(v)[1],                # Категория 2-го уровня
                 _category(v)[2],                # Категория 3-го уровня
@@ -591,7 +596,7 @@ def generate_yandex_market_yml(variants, output_path):
             name = _feature_val(f, "Серия")
             SubElement(offer, "name").text = name if name else v["name"]
 
-            SubElement(offer, "vendor").text = v.get("brand") or f.get("Бренд", "Apple")
+            SubElement(offer, "vendor").text = f.get("Бренд", "Apple")
             SubElement(offer, "vendorCode").text = v["sku"]
 
             SubElement(offer, "description").text = ""
@@ -669,7 +674,7 @@ def main():
                 "stock": v["stock"],
                 "url": v["url"],
                 "source_url": v.get("source_url", v["url"]),
-                "brand": v.get("brand") or v["features"].get("Бренд", "Apple"),
+                "brand": v["features"].get("Бренд", "Apple"),
                 "description": v.get("description", ""),
                 "features": v["features"],
                 "images": v.get("images", []),

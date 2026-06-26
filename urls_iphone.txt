@@ -1,0 +1,31 @@
+# Apple iPhone — URLs для парсинга techno-buyer.ru
+
+# Apple iPhone 17 Pro Max
+https://techno-buyer.ru/iphone-17-pro-max-256gb-bez-rustore-oranzhevyy-2/
+
+# Apple iPhone 17 Pro
+https://techno-buyer.ru/iphone-17-pro-256gb-bez-rustore-oranzhevyy-2/
+
+# Apple iPhone 17e
+https://techno-buyer.ru/iphone-17e-256gb-sim-esim-bez-rustore-rozovyy/
+
+# Apple iPhone 17 Air
+https://techno-buyer.ru/iphone-17-air-256gb-zolotoy/
+
+# Apple iPhone 17
+https://techno-buyer.ru/iphone-17-256gb-bez-rustore-goluboy-2/
+
+# Apple iPhone 16 Pro Max
+https://techno-buyer.ru/iphone-16-pro-max-256gb-sim-esim-pustynnyy-titan/
+
+# Apple iPhone 16 Pro
+https://techno-buyer.ru/iphone-16-pro-128gb-sim-esim-titanovyy-belyy/
+
+# Apple iPhone 16 Plus
+https://techno-buyer.ru/iphone-16-plus-128gb-sim-esim-ultramarin/
+
+# Apple iPhone 16e
+https://techno-buyer.ru/iphone-16-128gb-sim-esim-belyy-2/
+
+# Apple iPhone 16
+https://techno-buyer.ru/iphone-16-128gb-sim-esim-bez-rustore-chernyy-2/

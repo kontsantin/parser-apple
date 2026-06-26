@@ -4,10 +4,11 @@
   python parse_technobuyer.py "URL-товара"         — автосбор вариантов с одного URL
   python parse_technobuyer.py --file urls.txt      — парсинг списка URL из файла
 """
-import sys, re, json, os, html as html_mod
+import sys, re, json, os, html as html_mod, threading
 from datetime import datetime
 from urllib.request import urlopen, Request
 from urllib.parse import urljoin
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from xml.etree.ElementTree import Element, SubElement, tostring
 from xml.dom.minidom import parseString
 
@@ -18,13 +19,24 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 
 import socket
+import time as time_mod
 
 socket.setdefaulttimeout(30)
 
-def fetch(url):
-    req = Request(url, headers=HEADERS)
-    with urlopen(req, timeout=30) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+RETRIES = 3
+RETRY_DELAY = 3
+
+def fetch(url, attempt=1):
+    try:
+        req = Request(url, headers=HEADERS)
+        with urlopen(req, timeout=30) as resp:
+            return resp.read().decode("utf-8", errors="replace")
+    except Exception as e:
+        if attempt < RETRIES:
+            print(f"  [retry {attempt}/{RETRIES}] {url}: {e}")
+            time_mod.sleep(RETRY_DELAY * attempt)
+            return fetch(url, attempt + 1)
+        raise
 
 
 def parse_product_page(url):
@@ -73,21 +85,27 @@ def parse_product_page(url):
     brand_match = re.search(r'<meta\s+itemprop="name"\s+content="([^"]+)"', text)
     brand = brand_match.group(1) if brand_match else "Apple"
 
-    base_slug = re.search(r'/([^/]+)/?(?:index\.php)?$', url)
-    base_pattern = ""
-    if base_slug:
-        parts = base_slug.group(1).split("-")
-        base_pattern = "-".join(parts[:3]) + "-" if len(parts) >= 3 else ""
+    SIZE_RE = re.compile(r'^\d+', re.IGNORECASE)
+
+    def _model_name(slug):
+        parts = slug.split("-")
+        for i, p in enumerate(parts):
+            if SIZE_RE.match(p) and any(p.lower().endswith(s) for s in ('gb', 'tb', 'mm')):
+                return "-".join(parts[:i])
+        return slug
+
+    base_slug_match = re.search(r'/([^/]+)/?(?:index\.php)?$', url)
+    model_name = _model_name(base_slug_match.group(1)) if base_slug_match else ""
 
     variant_urls = set()
     for m in re.finditer(r'<a\s+[^>]*class="[^"]*\bproduct-group__item\b[^"]*"[^>]*href="([^"]+)"', text):
         href = m.group(1)
         if not href:
             continue
-        if base_pattern and base_pattern not in href:
-            continue
-        if "pro-max" in href.lower():
-            continue
+        if model_name:
+            v_slug_match = re.search(r'/([^/]+)/?(?:index\.php)?$', href)
+            if not v_slug_match or _model_name(v_slug_match.group(1)) != model_name:
+                continue
         variant_urls.add(urljoin(BASE, href))
 
     return {
@@ -103,12 +121,14 @@ def parse_product_page(url):
         "images": images,
         "description": desc,
         "variant_urls": variant_urls,
+        "source_url": url,
     }
 
 
 def parse_product(main_url):
     print(f"Парсинг главной страницы...")
     main = parse_product_page(main_url)
+    main["source_url"] = main_url
     variants = [main]
     parsed_urls = {main_url}
 
@@ -119,6 +139,7 @@ def parse_product(main_url):
         try:
             print(f"  Парсинг варианта: {vurl}")
             v = parse_product_page(vurl)
+            v["source_url"] = main_url
             variants.append(v)
         except Exception as e:
             print(f"  [!] Ошибка: {e}")
@@ -126,37 +147,130 @@ def parse_product(main_url):
     return variants
 
 
-def parse_urls_from_file(filepath):
+def detect_category(url):
+    u = url.lower()
+    if "airpods" in u:
+        return "airpods"
+    if "apple-watch" in u or "/watch" in u:
+        return "apple_watch"
+    if "macbook" in u:
+        return "macbook"
+    if "ipad" in u:
+        return "ipad"
+    if "iphone" in u:
+        return "iphone"
+    return "other"
+
+
+# --- Error/debug tracking ---
+
+def _errors_path(urls_path):
+    base = os.path.splitext(urls_path)[0]
+    return f"{base}_errors.txt"
+
+
+def load_error_urls(errors_path):
+    if not os.path.exists(errors_path):
+        return []
+    with open(errors_path, "r", encoding="utf-8") as f:
+        return [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+
+
+def save_error_url(errors_path, url):
+    existing = set()
+    if os.path.exists(errors_path):
+        with open(errors_path, "r", encoding="utf-8") as f:
+            existing = {line.strip() for line in f if line.strip()}
+    if url not in existing:
+        with open(errors_path, "a", encoding="utf-8") as f:
+            f.write(url + "\n")
+
+
+def parse_urls_from_file(filepath, max_workers=10):
+    errors_path = _errors_path(filepath)
+
+    # 1. Load main URLs
     with open(filepath, "r", encoding="utf-8") as f:
         urls = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+
+    # 2. Load previously failed URLs
+    retry_urls = load_error_urls(errors_path)
+    if retry_urls:
+        print(f"Найдено URL с прошлых ошибок: {len(retry_urls)}")
+        existing = set(urls)
+        retry_only = [u for u in retry_urls if u not in existing]
+        urls = retry_only + urls
+        # Clear old error file — will repopulate with only still-failing URLs
+        open(errors_path, "w", encoding="utf-8").close()
 
     if not urls:
         raise SystemExit(f"Файл {filepath} пуст или не содержит URL.")
 
-    print(f"Загружено URL: {len(urls)}")
+    print(f"Загружено URL: {len(urls)} (потоков: {max_workers})")
     variants = []
-    parsed_urls = set()
+    parsed_urls = set(urls)
+    lock = threading.Lock()
+    total = len(urls)
+    done = [0]
+    failed_urls_lock = threading.Lock()
+    failed_urls = set()
+    failed_variant_urls = set()
 
-    for i, url in enumerate(urls, 1):
+    def _process_url(url):
+        local_variants = []
         try:
-            print(f"\n[{i}/{len(urls)}] Парсинг: {url}")
             main = parse_product_page(url)
+            main["source_url"] = url
+            with lock:
+                done[0] += 1
+                idx = done[0]
+            print(f"\n[{idx}/{total}] Парсинг: {url}")
             if main["url"] not in parsed_urls:
-                parsed_urls.add(main["url"])
-                variants.append(main)
+                with lock:
+                    if main["url"] not in parsed_urls:
+                        parsed_urls.add(main["url"])
+                        local_variants.append(main)
 
             for vurl in sorted(main["variant_urls"]):
-                if vurl in parsed_urls:
-                    continue
-                parsed_urls.add(vurl)
+                with lock:
+                    if vurl in parsed_urls:
+                        continue
+                    parsed_urls.add(vurl)
                 try:
                     print(f"  Вариант: {vurl}")
                     v = parse_product_page(vurl)
-                    variants.append(v)
+                    v["source_url"] = url
+                    local_variants.append(v)
                 except Exception as e:
                     print(f"  [!] Ошибка варианта: {e}")
+                    with failed_variant_urls_lock:
+                        failed_variant_urls.add(vurl)
         except Exception as e:
-            print(f"  [!] Ошибка: {e}")
+            with lock:
+                done[0] += 1
+            print(f"  [!] Ошибка [{url}]: {e}")
+            with failed_urls_lock:
+                failed_urls.add(url)
+        return local_variants
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_process_url, url): url for url in urls}
+        for future in as_completed(futures):
+            result = future.result()
+            with lock:
+                variants.extend(result)
+
+    # 3. Write failed URLs to error file for next retry
+    all_failed = failed_urls | failed_variant_urls
+    if all_failed:
+        with open(errors_path, "w", encoding="utf-8") as f:
+            for u in sorted(all_failed):
+                f.write(u + "\n")
+        print(f"\n  [!] Не спарсилось URL: {len(all_failed)} — записаны в {errors_path}")
+    elif retry_urls:
+        # All previous errors resolved — remove file
+        if os.path.exists(errors_path):
+            os.remove(errors_path)
 
     return variants
 
@@ -199,6 +313,13 @@ def generate_yandex_kit_xlsx(variants, output_path):
     if not variants:
         return 0
 
+    groups = {}
+    for v in variants:
+        src = v.get("source_url", v["url"])
+        groups.setdefault(src, []).append(v)
+
+    base_ts = int(datetime.now().timestamp() * 1000)
+
     # Шаблон Яндекс Кит — столбцы строго по порядку из официального шаблона
     fieldnames = [
         "KIT ID*", "Название товара*", "Артикул", "Описание товара", "Штрихкод",
@@ -220,8 +341,38 @@ def generate_yandex_kit_xlsx(variants, output_path):
         "ОС", "Защита от воды", "Разъём", "Год модели",
     ]
 
-    group_id = str(int(datetime.now().timestamp() * 1000))
-    series = variants[0]["features"].get("Серия", "iPhone 17 Pro")
+    # Map XLSX column names → feature dict keys
+    FEATURE_KEY_MAP = {
+        "Цвет": "Цвет",
+        "Объём встроенной памяти": "Встроенная память",
+        "Тип связи": "Связь",
+        "Процессор": "Процессор",
+    }
+
+    def _make_grouping_key(f, grouping_cols):
+        return "|".join(f.get(FEATURE_KEY_MAP.get(c, c), "") for c in grouping_cols)
+
+    def _pick_grouping(group_variants):
+        all_have = lambda key: all(v["features"].get(key, "") for v in group_variants)
+        if all_have("Связь"):
+            return ["Цвет", "Объём встроенной памяти", "Тип связи"]
+        elif all_have("Процессор"):
+            return ["Цвет", "Объём встроенной памяти", "Процессор"]
+        else:
+            return ["Цвет", "Объём встроенной памяти"]
+
+    def _category(v):
+        name = (v.get("name", "") + " " + v["features"].get("Серия", "")).lower()
+        url = v.get("url", "").lower()
+        if "macbook" in name or "macbook" in url or "mac" in v["features"].get("Тип", "").lower():
+            return ("Электроника", "Ноутбуки", "Apple MacBook")
+        if "ipad" in name or "ipad" in url:
+            return ("Электроника", "Планшеты", "Apple iPad")
+        if "airpods" in name or "airpods" in url:
+            return ("Электроника", "Наушники", "Apple AirPods")
+        if "watch" in url or "apple watch" in name:
+            return ("Электроника", "Смарт-часы", "Apple Watch")
+        return ("Электроника", "Смартфоны", "Apple iPhone")
 
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -230,58 +381,83 @@ def generate_yandex_kit_xlsx(variants, output_path):
     for ci, h in enumerate(fieldnames, 1):
         ws.cell(row=1, column=ci, value=h)
 
-    for ri, v in enumerate(variants, 2):
-        f = v["features"]
-        weight_raw = f.get("Вес", "").replace(" г", "").strip()
-        row = [
-            "",                             # KIT ID* — пусто для новых
-            _build_product_name(v, f, series),  # Название товара*
-            v["sku"],                       # Артикул
-            v["description"][:5000] if v["description"] else "",  # Описание товара
-            "",                             # Штрихкод
-            "Опубликован",                  # Статус
-            int(v["old_price"]),            # Цена до скидки, руб.
-            int(v["price"]),                # Цена со скидкой, руб.
-            "",                             # Цена по акции, руб.
-            "",                             # Минимальная цена, руб.
-            "",                             # Приоритет в каталоге
-            22,                             # Ставка НДС
-            0,                              # Маркируемый товар
-            group_id,                       # Объединять по (Group ID)
-            "Цвет; Объём встроенной памяти; Тип связи",  # Группирующие характеристики
-            "",                             # Разделять на карточки по
-            v["brand"],                     # Бренд
-            "Электроника",                  # Категория 1-го уровня*
-            "Смартфоны",                    # Категория 2-го уровня
-            "Apple iPhone",                 # Категория 3-го уровня
-            v["stock"],                     # Склад: Склад №1
-            "", "", "",                     # Внешние ID (1C, МойСклад, WB)
-            "", "", "",                     # Внешние ID (Ozon, YML, Яндекс.Маркет)
-            " ".join(v.get("images", [])[:10]),  # Изображения и видео
-            "",                             # Ссылки на файлы
-            "",                             # Бейджи
-            "",                             # Количество упаковок
-            "", "", "",                     # Габариты (высота, ширина, длина)
-            weight_raw,                     # Вес с упаковкой, г
-            # Характеристики
-            f.get("Цвет", ""),
-            f.get("Встроенная память", ""),
-            f.get("Связь", ""),
-            f.get("Серия", ""),
-            f.get("Процессор", ""),
-            f.get("Диагональ", ""),
-            f.get("Разрешение камеры", ""),
-            f.get("Разрешение фронтальной камеры, Мп", ""),
-            f.get("Операционная система", ""),
-            f.get("Защита от воды", ""),
-            f.get("Разъём", ""),
-            f.get("Год (модель представлена)", ""),
-        ]
-        for ci, val in enumerate(row, 1):
-            ws.cell(row=ri, column=ci, value=val)
+    ri = 2
+    for gi, (src_url, group_variants) in enumerate(groups.items()):
+        group_id = str(base_ts + gi)
+        series = group_variants[0]["features"].get("Серия", "")
+
+        grouping_cols = _pick_grouping(group_variants)
+        grouping_chars_str = "; ".join(grouping_cols)
+
+        # Deduplicate: keep only first variant per grouping key
+        seen_keys = {}
+        deduped = []
+        skipped = 0
+        for v in group_variants:
+            f = v["features"]
+            gkey = _make_grouping_key(f, grouping_cols)
+            if gkey in seen_keys:
+                skipped += 1
+                continue
+            seen_keys[gkey] = True
+            deduped.append(v)
+        if skipped:
+            print(f"  [!] Пропущено дубликатов: {skipped} (группа {series})")
+
+        for v in deduped:
+            f = v["features"]
+            old_price = int(v["old_price"]) if v["old_price"] > 0 else int(v["price"])
+            weight_raw = f.get("Вес", "").replace(" г", "").strip()
+            row = [
+                "",                             # KIT ID* — пусто для новых
+                _build_product_name(v, f, series),  # Название товара*
+                v["sku"],                       # Артикул
+                v["description"][:5000] if v["description"] else "",  # Описание товара
+                "",                             # Штрихкод
+                "Опубликован",                  # Статус
+                old_price,                      # Цена до скидки, руб.
+                int(v["price"]),                # Цена со скидкой, руб.
+                "",                             # Цена по акции, руб.
+                "",                             # Минимальная цена, руб.
+                "",                             # Приоритет в каталоге
+                22,                             # Ставка НДС
+                0,                              # Маркируемый товар
+                group_id,                       # Объединять по (Group ID)
+                grouping_chars_str,             # Группирующие характеристики
+                "",                             # Разделять на карточки по
+                v["brand"],                     # Бренд
+                _category(v)[0],                # Категория 1-го уровня*
+                _category(v)[1],                # Категория 2-го уровня
+                _category(v)[2],                # Категория 3-го уровня
+                v["stock"],                     # Склад: Склад №1
+                "", "", "",                     # Внешние ID (1C, МойСклад, WB)
+                "", "", "",                     # Внешние ID (Ozon, YML, Яндекс.Маркет)
+                " ".join(v.get("images", [])[:10]),  # Изображения и видео
+                "",                             # Ссылки на файлы
+                "",                             # Бейджи
+                "",                             # Количество упаковок
+                "", "", "",                     # Габариты (высота, ширина, длина)
+                weight_raw,                     # Вес с упаковкой, г
+                # Характеристики
+                f.get("Цвет", ""),
+                f.get("Встроенная память", ""),
+                f.get("Связь", ""),
+                f.get("Серия", ""),
+                f.get("Процессор", ""),
+                f.get("Диагональ", ""),
+                f.get("Разрешение камеры", ""),
+                f.get("Разрешение фронтальной камеры, Мп", ""),
+                f.get("Операционная система", ""),
+                f.get("Защита от воды", ""),
+                f.get("Разъём", ""),
+                f.get("Год (модель представлена)", ""),
+            ]
+            for ci, val in enumerate(row, 1):
+                ws.cell(row=ri, column=ci, value=val)
+            ri += 1
 
     wb.save(output_path)
-    return len(variants)
+    return ri - 2
 
 
 # ====================================================================
@@ -301,8 +477,12 @@ def generate_yandex_market_yml(variants, output_path):
     if not variants:
         return 0
 
-    main = variants[0]
-    features = main["features"]
+    groups = {}
+    for v in variants:
+        src = v.get("source_url", v["url"])
+        groups.setdefault(src, []).append(v)
+
+    base_ts = int(datetime.now().timestamp() * 1000)
     now = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+03:00")
 
     yml = Element("yml_catalog", {"date": now})
@@ -320,77 +500,94 @@ def generate_yandex_market_yml(variants, output_path):
     categories = SubElement(shop, "categories")
     SubElement(categories, "category", {"id": "1"}).text = "Смартфоны"
     SubElement(categories, "category", {"id": "2", "parentId": "1"}).text = "Apple iPhone"
-    SubElement(categories, "category", {"id": "3", "parentId": "2"}).text = f"Apple {features.get('Серия', 'iPhone')}"
+    SubElement(categories, "category", {"id": "3"}).text = "Ноутбуки"
+    SubElement(categories, "category", {"id": "4", "parentId": "3"}).text = "Apple MacBook"
+    SubElement(categories, "category", {"id": "5"}).text = "Планшеты"
+    SubElement(categories, "category", {"id": "6", "parentId": "5"}).text = "Apple iPad"
+    first_series = list(groups.values())[0][0]["features"].get("Серия", "iPhone")
+    SubElement(categories, "category", {"id": "7", "parentId": "2"}).text = f"Apple {first_series}"
 
-    group_id = str(int(datetime.now().timestamp() * 1000))
     offers = SubElement(shop, "offers")
 
-    for v in variants:
-        f = v["features"]
-        offer = SubElement(offers, "offer", {
-            "id": v["sku"],
-            "available": "true",
-            "group_id": group_id,
-        })
+    def _yml_category(v):
+        name = (v.get("name", "") + " " + v["features"].get("Серия", "")).lower()
+        url = v.get("url", "").lower()
+        if "macbook" in name or "macbook" in url or "mac" in v["features"].get("Тип", "").lower():
+            return "4"
+        if "ipad" in name or "ipad" in url:
+            return "6"
+        return "2"
 
-        SubElement(offer, "url").text = v["url"]
-        SubElement(offer, "price").text = str(int(v["price"]))
-        SubElement(offer, "oldprice").text = str(int(v["old_price"])) if v["old_price"] else str(int(v["price"]))
-        SubElement(offer, "currencyId").text = "RUB"
-        SubElement(offer, "categoryId").text = "3"
+    for gi, (src_url, group_variants) in enumerate(groups.items()):
+        group_id = str(base_ts + gi)
 
-        for img_url in v["images"][:10]:
-            SubElement(offer, "picture").text = img_url
+        for v in group_variants:
+            f = v["features"]
+            offer = SubElement(offers, "offer", {
+                "id": v["sku"],
+                "available": "true",
+                "group_id": group_id,
+            })
 
-        name = _feature_val(f, "Серия")
-        SubElement(offer, "name").text = name if name else v["name"]
+            SubElement(offer, "url").text = v["url"]
+            SubElement(offer, "price").text = str(int(v["price"]))
+            old_price = int(v["old_price"]) if v["old_price"] > 0 else int(v["price"])
+            SubElement(offer, "oldprice").text = str(old_price)
+            SubElement(offer, "currencyId").text = "RUB"
+            SubElement(offer, "categoryId").text = _yml_category(v)
 
-        SubElement(offer, "vendor").text = v["brand"]
-        SubElement(offer, "vendorCode").text = v["sku"]
+            for img_url in v["images"][:10]:
+                SubElement(offer, "picture").text = img_url
 
-        color = f.get("Цвет", "")
-        processor = f.get("Процессор", "")
-        display = f.get("Диагональ", "")
-        display_tech = f.get("Технологии дисплея", "")
-        camera = f.get("Разрешение камеры", "")
-        desc = f"{name} {_storage_label(f.get('Встроенная память', ''))}, {f.get('Связь', '')}, без RuStore"
-        if color:
-            desc += f" ({_color_label(color)})"
-        desc += "."
-        if processor:
-            desc += f" Процессор {processor},"
-        if display:
-            desc += f" дисплей {display}"
-        if display_tech:
-            desc += f" ({display_tech}),"
-        if camera:
-            desc += f" камера {camera},"
-        desc += " защита IP68."
-        SubElement(offer, "description").text = desc
+            name = _feature_val(f, "Серия")
+            SubElement(offer, "name").text = name if name else v["name"]
 
-        SubElement(offer, "barcode")
-        SubElement(offer, "weight").text = "0.206"
+            SubElement(offer, "vendor").text = v["brand"]
+            SubElement(offer, "vendorCode").text = v["sku"]
 
-        params = [
-            ("Бренд", v["brand"]),
-            ("Серия", f.get("Серия", "")),
-            ("Модель", f.get("Серия", "")),
-            ("Цвет", f.get("Цвет", "")),
-            ("Объём встроенной памяти", f.get("Встроенная память", "")),
-            ("Тип связи", f.get("Связь", "")),
-            ("Диагональ экрана", f.get("Диагональ", "").replace(" дюйм", '"')),
-            ("Процессор", f.get("Процессор", "")),
-            ("Основная камера", f.get("Разрешение камеры", "")),
-            ("Фронтальная камера", f.get("Разрешение фронтальной камеры, Мп", "")),
-            ("Защита от воды", f.get("Защита от воды", "")),
-            ("ОС", f.get("Операционная система", "")),
-            ("Разъём", f.get("Разъём", "")),
-            ("Вес", f.get("Вес", "")),
-            ("Год модели", f.get("Год (модель представлена)", "")),
-        ]
-        for pname, pval in params:
-            if pval:
-                SubElement(offer, "param", {"name": pname}).text = pval
+            color = f.get("Цвет", "")
+            processor = f.get("Процессор", "")
+            display = f.get("Диагональ", "")
+            display_tech = f.get("Технологии дисплея", "")
+            camera = f.get("Разрешение камеры", "")
+            desc = f"{name} {_storage_label(f.get('Встроенная память', ''))}, {f.get('Связь', '')}, без RuStore"
+            if color:
+                desc += f" ({_color_label(color)})"
+            desc += "."
+            if processor:
+                desc += f" Процессор {processor},"
+            if display:
+                desc += f" дисплей {display}"
+            if display_tech:
+                desc += f" ({display_tech}),"
+            if camera:
+                desc += f" камера {camera},"
+            desc += " защита IP68."
+            SubElement(offer, "description").text = desc
+
+            SubElement(offer, "barcode")
+            SubElement(offer, "weight").text = "0.206"
+
+            params = [
+                ("Бренд", v["brand"]),
+                ("Серия", f.get("Серия", "")),
+                ("Модель", f.get("Серия", "")),
+                ("Цвет", f.get("Цвет", "")),
+                ("Объём встроенной памяти", f.get("Встроенная память", "")),
+                ("Тип связи", f.get("Связь", "")),
+                ("Диагональ экрана", f.get("Диагональ", "").replace(" дюйм", '"')),
+                ("Процессор", f.get("Процессор", "")),
+                ("Основная камера", f.get("Разрешение камеры", "")),
+                ("Фронтальная камера", f.get("Разрешение фронтальной камеры, Мп", "")),
+                ("Защита от воды", f.get("Защита от воды", "")),
+                ("ОС", f.get("Операционная система", "")),
+                ("Разъём", f.get("Разъём", "")),
+                ("Вес", f.get("Вес", "")),
+                ("Год модели", f.get("Год (модель представлена)", "")),
+            ]
+            for pname, pval in params:
+                if pval:
+                    SubElement(offer, "param", {"name": pname}).text = pval
 
     raw = tostring(yml, encoding="unicode")
     pretty = parseString(raw).toprettyxml(indent="  ", encoding="UTF-8")
@@ -405,13 +602,18 @@ def generate_yandex_market_yml(variants, output_path):
 # ====================================================================
 
 def main():
-    if len(sys.argv) >= 3 and sys.argv[1] == "--file":
-        variants = parse_urls_from_file(sys.argv[2])
-    elif len(sys.argv) > 1 and not sys.argv[1].startswith("--"):
-        variants = parse_product(sys.argv[1])
+    max_workers = 10
+    args = [a for a in sys.argv[1:] if not a.startswith("--workers=")]
+    for a in sys.argv[1:]:
+        if a.startswith("--workers="):
+            max_workers = int(a.split("=")[1])
+
+    if len(args) >= 2 and args[0] == "--file":
+        variants = parse_urls_from_file(args[1], max_workers=max_workers)
+    elif len(args) > 0 and not args[0].startswith("--"):
+        variants = parse_product(args[0])
     else:
-        url = "https://techno-buyer.ru/iphone-17-pro-1tb-bez-rustore-oranzhevyy-2/"
-        variants = parse_product(url)
+        variants = parse_urls_from_file("urls.txt", max_workers=max_workers)
 
     print(f"\n{'=' * 60}")
     print(f"Найдено вариаций: {len(variants)}")
@@ -424,37 +626,43 @@ def main():
         conn = f.get("Связь", "?")
         print(f"  {v['sku']:12s} | {color:12s} | {memory:8s} | {conn:14s} | {int(v['price']):>8,} RUB | stock: {v['stock']}".replace(",", " "))
 
-    # XLSX для Яндекс Кит
-    xlsx_path = "yandex-kit-import.xlsx"
-    n = generate_yandex_kit_xlsx(variants, xlsx_path)
-    print(f"\nXLSX для Яндекс Кит сохранён: {xlsx_path} ({n} строк)")
-
-    # YML для Яндекс Маркет
-    yml_path = "yandex-market-import.yml"
-    n2 = generate_yandex_market_yml(variants, yml_path)
-    print(f"YML для Яндекс Маркет сохранён: {yml_path} ({n2} офферов)")
-
-    # JSON для справки
-    json_path = "parsed-data.json"
-    serializable = []
+    # Группируем по категориям — каждая в отдельный файл
+    by_category = {}
     for v in variants:
-        serializable.append({
-            "sku": v["sku"],
-            "name": v["name"],
-            "price": v["price"],
-            "old_price": v["old_price"],
-            "stock": v["stock"],
-            "url": v["url"],
-            "features": v["features"],
-            "images": v.get("images", []),
-        })
-    with open(json_path, "w", encoding="utf-8") as f:
-        json.dump({"variants": serializable}, f, ensure_ascii=False, indent=2)
-    print(f"JSON сохранён: {json_path}")
+        cat = detect_category(v.get("url", ""))
+        by_category.setdefault(cat, []).append(v)
+
+    for cat_name, cat_variants in by_category.items():
+        print(f"\n--- Категория: {cat_name} ({len(cat_variants)} вариаций) ---")
+
+        xlsx_path = f"yandex-kit-import-{cat_name}.xlsx"
+        n = generate_yandex_kit_xlsx(cat_variants, xlsx_path)
+        print(f"  XLSX: {xlsx_path} ({n} строк)")
+
+        yml_path = f"yandex-market-import-{cat_name}.yml"
+        n2 = generate_yandex_market_yml(cat_variants, yml_path)
+        print(f"  YML:  {yml_path} ({n2} офферов)")
+
+        json_path = f"parsed-data-{cat_name}.json"
+        serializable = []
+        for v in cat_variants:
+            serializable.append({
+                "sku": v["sku"],
+                "name": v["name"],
+                "price": v["price"],
+                "old_price": v["old_price"],
+                "stock": v["stock"],
+                "url": v["url"],
+                "features": v["features"],
+                "images": v.get("images", []),
+            })
+        with open(json_path, "w", encoding="utf-8") as fh:
+            json.dump({"variants": serializable}, fh, ensure_ascii=False, indent=2)
+        print(f"  JSON: {json_path}")
 
     print("\nГотово!")
-    print("  Загрузка в Яндекс Кит:   Товары -> Добавить -> из Excel-файла -> yandex-kit-import.xlsx")
-    print("  Загрузка в Яндекс Маркет: yandex-market-import.yml")
+    print("  Загрузка в Яндекс Кит:   Товары -> Добавить -> из Excel-файла -> yandex-kit-import-*.xlsx")
+    print("  Загрузка в Яндекс Маркет: yandex-market-import-*.yml")
 
 
 if __name__ == "__main__":

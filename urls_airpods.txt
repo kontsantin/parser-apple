@@ -1,0 +1,34 @@
+# Apple AirPods — URLs для парсинга techno-buyer.ru
+
+# Apple AirPods 4 (ANC)
+https://techno-buyer.ru/airpods-4-anc/
+
+# Apple AirPods 4
+https://techno-buyer.ru/naushniki-airpods-4-go-pokoleniya-belye/
+
+# Apple AirPods Max (USB-C) — фиолетовый
+https://techno-buyer.ru/naushniki-airpods-max-usb-c-fioletovyy/
+
+# Apple AirPods Max (USB-C) — оранжевый
+https://techno-buyer.ru/naushniki-airpods-max-usb-c-oranzhevyy/
+
+# Apple AirPods Max (USB-C) — полуночный черный
+https://techno-buyer.ru/naushniki-airpods-max-usb-c-polunochnyi-chernyi/
+
+# Apple AirPods Max (USB-C) — синий
+https://techno-buyer.ru/naushniki-airpods-max-usb-c-siniy/
+
+# Apple AirPods Max (USB-C) — сияющая звезда
+https://techno-buyer.ru/naushniki-airpods-max-usb-c-siyayushchaya-zvezda/
+
+# Apple AirPods Pro 2 (MagSafe Lightning)
+https://techno-buyer.ru/naushniki-airpods-pro-s-zaryadnym-futlyarom-magsafe-lightning-2-go-pokoleniya/
+
+# Apple AirPods Pro 2 (MagSafe USB-C)
+https://techno-buyer.ru/naushniki-airpods-pro-s-zaryadnym-futlyarom-magsafe-usb-c-2-go-pokoleniya/
+
+# Apple AirPods 3 (Lightning)
+https://techno-buyer.ru/naushniki-airpods-s-zaryadnym-futlyarom-lightning-3-go-pokoleniya/
+
+# Apple AirPods 3 (MagSafe)
+https://techno-buyer.ru/naushniki-airpods-s-zaryadnym-futlyarom-magsafe-3-go-pokoleniya/

@@ -1,0 +1,73 @@
+# Apple Watch — URLs для парсинга techno-buyer.ru
+
+# Apple Watch Series 11 42mm — черный
+https://techno-buyer.ru/apple-watch-series-11-42-mm-korpus-iz-alyuminiya-chyornyy/
+
+# Apple Watch Series 11 42mm — розовый
+https://techno-buyer.ru/apple-watch-series-11-42-mm-korpus-iz-alyuminiya-rozovyy/
+
+# Apple Watch Series 11 42mm — серый
+https://techno-buyer.ru/apple-watch-series-11-42-mm-korpus-iz-alyuminiya-seryy/
+
+# Apple Watch Series 11 46mm — черный
+https://techno-buyer.ru/apple-watch-series-11-46-mm-korpus-iz-alyuminiya-chyornyy/
+
+# Apple Watch Series 11 46mm — зеленый
+https://techno-buyer.ru/apple-watch-series-11-46-mm-korpus-iz-alyuminiya-zelenyy/
+
+# Apple Watch Ultra 3 (2025) — бежевый
+https://techno-buyer.ru/apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-titanium-milanese-loop-tsveta-natural-bezhevyy/
+
+# Apple Watch Ultra 3 (2025) — черный (Alpine Loop черный)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-alpine-loop-tsveta-black-chyornyy/
+
+# Apple Watch Ultra 3 (2025) — голубой (Alpine Loop)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-alpine-loop-tsveta-light-blue-goluboy/
+
+# Apple Watch Ultra 3 (2025) — коричневый (Alpine Loop)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-alpine-loop-tsveta-terra-cotta-korichnevyy/
+
+# Apple Watch Ultra 3 (2025) — синий (Ocean Band)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-ocean-band-tsveta-anchor-blue-siniy/
+
+# Apple Watch Ultra 3 (2025) — черный (Ocean Band)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-ocean-band-tsveta-black-chyornyy/
+
+# Apple Watch Ultra 3 (2025) — зеленый (Ocean Band)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-ocean-band-tsveta-neon-green-zelyonyy/
+
+# Apple Watch Ultra 3 (2025) — черный (Milanese Loop)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-titanium-milanese-loop-tsveta-black-chyornyy/
+
+# Apple Watch Ultra 3 (2025) — черный (Trail Loop)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-trail-loop-tsveta-black-charcoal-chyornyy/
+
+# Apple Watch Ultra 3 (2025) — зеленый (Trail Loop)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-black-remeshok-trail-loop-tsveta-green-neon-zelyonyy/
+
+# Apple Watch Ultra 3 (2025) — черный (Alpine Loop, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-alpine-loop-tsveta-black-chyornyy/
+
+# Apple Watch Ultra 3 (2025) — голубой (Alpine Loop, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-alpine-loop-tsveta-light-blue-goluboy/
+
+# Apple Watch Ultra 3 (2025) — коричневый (Alpine Loop, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-alpine-loop-tsveta-terra-cotta-korichnevyy/
+
+# Apple Watch Ultra 3 (2025) — синий (Ocean Band, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-ocean-band-tsveta-anchor-blue-siniy/
+
+# Apple Watch Ultra 3 (2025) — черный (Ocean Band, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-ocean-band-tsveta-black-chyornyy/
+
+# Apple Watch Ultra 3 (2025) — зеленый (Ocean Band, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-ocean-band-tsveta-neon-green-zelyonyy/
+
+# Apple Watch Ultra 3 (2025) — черный (Trail Loop, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-trail-loop-tsveta-black-charcoal-chyornyy/
+
+# Apple Watch Ultra 3 (2025) — синий (Trail Loop, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-trail-loop-tsveta-blue-bright-blue-siniy/
+
+# Apple Watch Ultra 3 (2025) — зеленый (Trail Loop, natural)
+https://techno-buyer.ru/chasy-apple-watch-ultra-3-2025-49-mm-korpus-iz-titana-tsveta-natural-remeshok-trail-loop-tsveta-green-neon-zelyonyy/

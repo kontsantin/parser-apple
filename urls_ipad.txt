@@ -1,0 +1,31 @@
+# Apple iPad — URLs для парсинга techno-buyer.ru
+
+# Apple iPad Pro 13" M5 (2025)
+https://techno-buyer.ru/ipad-pro-2025-13-2tb-wi-fi-cellular-nanoteksturnoe-steklo-bez-rustore-serebristyy/
+
+# Apple iPad Pro 11" M5 (2025)
+https://techno-buyer.ru/ipad-pro-2025-11-2tb-wi-fi-cellular-nanoteksturnoe-steklo-bez-rustore-chernyy-kosmos/
+
+# Apple iPad 11" (2025)
+https://techno-buyer.ru/ipad-2025-11-512gb-wi-fi-bez-rustore-siniy/
+
+# Apple iPad Pro 13" M4 (2024)
+https://techno-buyer.ru/ipad-pro-2024-13-256gb-wi-fi-chernyy-kosmos/
+
+# Apple iPad Pro 11" M4 (2024)
+https://techno-buyer.ru/ipad-pro-2024-11-256gb-wi-fi-cellular-serebristyy/
+
+# Apple iPad Air 13" (2025)
+https://techno-buyer.ru/ipad-air-2024-13-1tb-wi-fi-seryy-kosmos-1/
+
+# Apple iPad Air 11" (2025)
+https://techno-buyer.ru/ipad-air-2025-11-128gb-wi-fi-cellular-fioletovyy/
+
+# Apple iPad Air 13" (2024)
+https://techno-buyer.ru/ipad-air-2024-13-128gb-wi-fi-seryy-kosmos/
+
+# Apple iPad Air 11" (2024)
+https://techno-buyer.ru/ipad-air-2024-11-256gb-wi-fi-cellular-fioletovyy/
+
+# Apple iPad mini (2024)
+https://techno-buyer.ru/ipad-mini-2024-256gb-wi-fi-siniy/

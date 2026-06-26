@@ -361,10 +361,15 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 seen_extra.add(key)
                 extra_keys.append(key)
 
-    groups = {}
-    for v in variants:
-        series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
-        groups.setdefault(series_key, []).append(v)
+    if _is_macbook:
+        groups = {}
+        for v in variants:
+            groups.setdefault(v["sku"], [v])
+    else:
+        groups = {}
+        for v in variants:
+            series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
+            groups.setdefault(series_key, []).append(v)
 
     base_ts = int(datetime.now().timestamp() * 1000)
 
@@ -436,8 +441,12 @@ def generate_yandex_kit_xlsx(variants, output_path):
         group_id = str(base_ts + gi)
         series = group_variants[0]["features"].get("Серия", "")
 
-        grouping_cols = _pick_grouping(group_variants)
-        grouping_chars_str = "; ".join(grouping_cols)
+        if _is_macbook and len(group_variants) <= 1:
+            grouping_cols = []
+            grouping_chars_str = ""
+        else:
+            grouping_cols = _pick_grouping(group_variants)
+            grouping_chars_str = "; ".join(grouping_cols)
 
         # Deduplicate identical variants first
         seen_hashes = {}
@@ -523,7 +532,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 f.get("Встроенная память", ""),
                 f.get("Связь", ""),
                 f.get("Серия", ""),
-                f.get("Процессор", ""),
+                "" if _is_macbook else f.get("Процессор", ""),
                 f.get("Диагональ", ""),
                 f.get("Разрешение камеры", ""),
                 f.get("Разрешение фронтальной камеры, Мп", ""),

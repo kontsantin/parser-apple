@@ -357,8 +357,8 @@ def generate_yandex_kit_xlsx(variants, output_path):
 
     groups = {}
     for v in variants:
-        src = v.get("source_url", v["url"])
-        groups.setdefault(src, []).append(v)
+        series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
+        groups.setdefault(series_key, []).append(v)
 
     base_ts = int(datetime.now().timestamp() * 1000)
 
@@ -433,17 +433,17 @@ def generate_yandex_kit_xlsx(variants, output_path):
         grouping_cols = _pick_grouping(group_variants)
         grouping_chars_str = "; ".join(grouping_cols)
 
-        # Deduplicate: keep only first variant per grouping key
-        seen_keys = {}
+        # Deduplicate: skip only truly identical variants (same features)
+        seen_hashes = {}
         deduped = []
         skipped = 0
         for v in group_variants:
             f = v["features"]
-            gkey = _make_grouping_key(f, grouping_cols)
-            if gkey in seen_keys:
+            dedup_key = "|".join(f"{k}={v}" for k, v in sorted(f.items()) if v)
+            if dedup_key in seen_hashes:
                 skipped += 1
                 continue
-            seen_keys[gkey] = True
+            seen_hashes[dedup_key] = True
             deduped.append(v)
         if skipped:
             print(f"  [!] Пропущено дубликатов: {skipped} (группа {series})")
@@ -525,8 +525,8 @@ def generate_yandex_market_yml(variants, output_path):
 
     groups = {}
     for v in variants:
-        src = v.get("source_url", v["url"])
-        groups.setdefault(src, []).append(v)
+        series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
+        groups.setdefault(series_key, []).append(v)
 
     base_ts = int(datetime.now().timestamp() * 1000)
     now = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+03:00")
@@ -665,6 +665,7 @@ def main():
                 "old_price": v["old_price"],
                 "stock": v["stock"],
                 "url": v["url"],
+                "source_url": v.get("source_url", v["url"]),
                 "brand": v.get("brand") or v["features"].get("Бренд", "Apple"),
                 "description": v.get("description", ""),
                 "features": v["features"],

@@ -308,6 +308,54 @@ def _build_product_name(variant, features, series):
     return base
 
 
+def _build_features_description(features):
+    """Build a human-readable description from all scraped features."""
+    if not features:
+        return ""
+
+    priority_order = [
+        "Тип", "Серия", "Год (модель представлена)", "Бренд", "Цвет",
+        "Процессор", "Ядер процессора", "Ядер Neural Engine", "Ядер графического процессора",
+        "Встроенная память", "Оперативная память", "Тип накопителя", "Поддержка карт памяти",
+        "Диагональ", "Тип дисплея", "Разрешение экрана, пикс",
+        "Технологии дисплея", "Плотность пикселей на дюйм", "Яркость, кд/м²",
+        "Контрастность", "Цветовой охват", "Поддержка доп. мониторов",
+        "Связь", "Беспроводная сеть", "Сотовая и беспроводная сеть",
+        "Поддержка интерфейсов", "Количество HDMI", "Количество Thunderbolt/USB 4",
+        "Разрешение камеры", "Разрешение основной камеры, Мп",
+        "Разрешение фронтальной камеры, Мп", "Диафрагма", "Зум (фото)",
+        "Разрешение видео", "Разрешение замедленного видео",
+        "Разрешение видео фронтальной камеры",
+        "Функции камеры", "Функции фронтальной камеры", "Функции видео",
+        "Защита объектива", "Веб-камера",
+        "Количество микрофонов", "Трекпад", "Аудио",
+        "Операционная система", "Датчики", "Навигация",
+        "Тип аккумулятора", "Работа от аккумулятора, часов",
+        "Время работы", "Мощность адаптера", "Разъем питания",
+        "Материал", "Вес", "Размер", "Ширина, мм", "Высота, мм", "Длина, мм",
+        "Защита от воды",
+        "Гарантия", "Страна производства", "В комплекте",
+    ]
+
+    seen = set()
+    lines = []
+
+    def _append(key, value):
+        if key not in seen and value:
+            seen.add(key)
+            lines.append(f"{key}: {value}")
+
+    # Ordered features
+    for key in priority_order:
+        _append(key, features.get(key, ""))
+
+    # Remaining features not in priority order
+    for key, val in features.items():
+        _append(key, val)
+
+    return "\n".join(lines)
+
+
 def generate_yandex_kit_xlsx(variants, output_path):
 
     if not variants:
@@ -356,10 +404,11 @@ def generate_yandex_kit_xlsx(variants, output_path):
         all_have = lambda key: all(v["features"].get(key, "") for v in group_variants)
         if all_have("Связь"):
             return ["Цвет", "Объём встроенной памяти", "Тип связи"]
-        elif all_have("Процессор"):
-            return ["Цвет", "Объём встроенной памяти", "Процессор"]
-        else:
-            return ["Цвет", "Объём встроенной памяти"]
+        if all_have("Процессор"):
+            processors = {v["features"].get("Процессор", "") for v in group_variants}
+            if len(processors) > 1:
+                return ["Цвет", "Объём встроенной памяти", "Процессор"]
+        return ["Цвет", "Объём встроенной памяти"]
 
     def _category(v):
         name = (v.get("name", "") + " " + v["features"].get("Серия", "")).lower()
@@ -412,7 +461,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 "",                             # KIT ID* — пусто для новых
                 _build_product_name(v, f, series),  # Название товара*
                 v["sku"],                       # Артикул
-                v["description"][:5000] if v["description"] else "",  # Описание товара
+                _build_features_description(f),  # Описание товара
                 "",                             # Штрихкод
                 "Опубликован",                  # Статус
                 old_price,                      # Цена до скидки, руб.
@@ -425,7 +474,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 group_id,                       # Объединять по (Group ID)
                 grouping_chars_str,             # Группирующие характеристики
                 "",                             # Разделять на карточки по
-                v["brand"],                     # Бренд
+                v.get("brand") or f.get("Бренд", "Apple"),  # Бренд
                 _category(v)[0],                # Категория 1-го уровня*
                 _category(v)[1],                # Категория 2-го уровня
                 _category(v)[2],                # Категория 3-го уровня
@@ -542,52 +591,21 @@ def generate_yandex_market_yml(variants, output_path):
             name = _feature_val(f, "Серия")
             SubElement(offer, "name").text = name if name else v["name"]
 
-            SubElement(offer, "vendor").text = v["brand"]
+            SubElement(offer, "vendor").text = v.get("brand") or f.get("Бренд", "Apple")
             SubElement(offer, "vendorCode").text = v["sku"]
 
-            color = f.get("Цвет", "")
-            processor = f.get("Процессор", "")
-            display = f.get("Диагональ", "")
-            display_tech = f.get("Технологии дисплея", "")
-            camera = f.get("Разрешение камеры", "")
-            desc = f"{name} {_storage_label(f.get('Встроенная память', ''))}, {f.get('Связь', '')}, без RuStore"
-            if color:
-                desc += f" ({_color_label(color)})"
-            desc += "."
-            if processor:
-                desc += f" Процессор {processor},"
-            if display:
-                desc += f" дисплей {display}"
-            if display_tech:
-                desc += f" ({display_tech}),"
-            if camera:
-                desc += f" камера {camera},"
-            desc += " защита IP68."
-            SubElement(offer, "description").text = desc
+            desc_text = _build_features_description(f)
+            if v.get("description"):
+                desc_text = v["description"] + "\n" + desc_text
+            SubElement(offer, "description").text = desc_text[:5000] if len(desc_text) > 5000 else desc_text
 
             SubElement(offer, "barcode")
-            SubElement(offer, "weight").text = "0.206"
+            weight_val = f.get("Вес", "").replace(" г", "").strip()
+            SubElement(offer, "weight").text = weight_val if weight_val else "0"
 
-            params = [
-                ("Бренд", v["brand"]),
-                ("Серия", f.get("Серия", "")),
-                ("Модель", f.get("Серия", "")),
-                ("Цвет", f.get("Цвет", "")),
-                ("Объём встроенной памяти", f.get("Встроенная память", "")),
-                ("Тип связи", f.get("Связь", "")),
-                ("Диагональ экрана", f.get("Диагональ", "").replace(" дюйм", '"')),
-                ("Процессор", f.get("Процессор", "")),
-                ("Основная камера", f.get("Разрешение камеры", "")),
-                ("Фронтальная камера", f.get("Разрешение фронтальной камеры, Мп", "")),
-                ("Защита от воды", f.get("Защита от воды", "")),
-                ("ОС", f.get("Операционная система", "")),
-                ("Разъём", f.get("Разъём", "")),
-                ("Вес", f.get("Вес", "")),
-                ("Год модели", f.get("Год (модель представлена)", "")),
-            ]
-            for pname, pval in params:
-                if pval:
-                    SubElement(offer, "param", {"name": pname}).text = pval
+            for fkey, fval in f.items():
+                if fval:
+                    SubElement(offer, "param", {"name": fkey}).text = str(fval)
 
     raw = tostring(yml, encoding="unicode")
     pretty = parseString(raw).toprettyxml(indent="  ", encoding="UTF-8")
@@ -653,6 +671,8 @@ def main():
                 "old_price": v["old_price"],
                 "stock": v["stock"],
                 "url": v["url"],
+                "brand": v.get("brand") or v["features"].get("Бренд", "Apple"),
+                "description": v.get("description", ""),
                 "features": v["features"],
                 "images": v.get("images", []),
             })

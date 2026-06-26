@@ -1,5 +1,5 @@
 """
-Парсер товаров techno-buyer.ru → Яндекс Кит (XLSX) + Яндекс Маркет (YML)
+Парсер товаров Apple → Яндекс Кит (XLSX) + Яндекс Маркет (YML)
 Использование:
   python parse_technobuyer.py "URL-товара"         — автосбор вариантов с одного URL
   python parse_technobuyer.py --file urls.txt      — парсинг списка URL из файла
@@ -308,54 +308,6 @@ def _build_product_name(variant, features, series):
     return base
 
 
-def _build_features_description(features):
-    """Build a human-readable description from all scraped features."""
-    if not features:
-        return ""
-
-    priority_order = [
-        "Тип", "Серия", "Год (модель представлена)", "Бренд", "Цвет",
-        "Процессор", "Ядер процессора", "Ядер Neural Engine", "Ядер графического процессора",
-        "Встроенная память", "Оперативная память", "Тип накопителя", "Поддержка карт памяти",
-        "Диагональ", "Тип дисплея", "Разрешение экрана, пикс",
-        "Технологии дисплея", "Плотность пикселей на дюйм", "Яркость, кд/м²",
-        "Контрастность", "Цветовой охват", "Поддержка доп. мониторов",
-        "Связь", "Беспроводная сеть", "Сотовая и беспроводная сеть",
-        "Поддержка интерфейсов", "Количество HDMI", "Количество Thunderbolt/USB 4",
-        "Разрешение камеры", "Разрешение основной камеры, Мп",
-        "Разрешение фронтальной камеры, Мп", "Диафрагма", "Зум (фото)",
-        "Разрешение видео", "Разрешение замедленного видео",
-        "Разрешение видео фронтальной камеры",
-        "Функции камеры", "Функции фронтальной камеры", "Функции видео",
-        "Защита объектива", "Веб-камера",
-        "Количество микрофонов", "Трекпад", "Аудио",
-        "Операционная система", "Датчики", "Навигация",
-        "Тип аккумулятора", "Работа от аккумулятора, часов",
-        "Время работы", "Мощность адаптера", "Разъем питания",
-        "Материал", "Вес", "Размер", "Ширина, мм", "Высота, мм", "Длина, мм",
-        "Защита от воды",
-        "Гарантия", "Страна производства", "В комплекте",
-    ]
-
-    seen = set()
-    lines = []
-
-    def _append(key, value):
-        if key not in seen and value:
-            seen.add(key)
-            lines.append(f"{key}: {value}")
-
-    # Ordered features
-    for key in priority_order:
-        _append(key, features.get(key, ""))
-
-    # Remaining features not in priority order
-    for key, val in features.items():
-        _append(key, val)
-
-    return "\n".join(lines)
-
-
 def generate_yandex_kit_xlsx(variants, output_path):
 
     if not variants:
@@ -504,7 +456,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 "",                             # KIT ID* — пусто для новых
                 _build_product_name(v, f, series),  # Название товара*
                 v["sku"],                       # Артикул
-                v.get("description", "")[:5000] if v.get("description") else "",  # Описание товара
+                "",                             # Описание товара
                 "",                             # Штрихкод
                 "Опубликован",                  # Статус
                 old_price,                      # Цена до скидки, руб.
@@ -582,10 +534,10 @@ def generate_yandex_market_yml(variants, output_path):
     yml = Element("yml_catalog", {"date": now})
     shop = SubElement(yml, "shop")
 
-    SubElement(shop, "name").text = "Techno Buyer"
-    SubElement(shop, "company").text = "Techno Buyer"
-    SubElement(shop, "url").text = "https://techno-buyer.ru"
-    SubElement(shop, "email").text = "info@techno-buyer.ru"
+    SubElement(shop, "name").text = "Apple"
+    SubElement(shop, "company").text = "Apple"
+    SubElement(shop, "url").text = "https://www.apple.com"
+    SubElement(shop, "email").text = ""
     SubElement(shop, "phone").text = "+7 (909) 964-77-74"
 
     currencies = SubElement(shop, "currencies")
@@ -639,10 +591,7 @@ def generate_yandex_market_yml(variants, output_path):
             SubElement(offer, "vendor").text = v.get("brand") or f.get("Бренд", "Apple")
             SubElement(offer, "vendorCode").text = v["sku"]
 
-            desc_text = _build_features_description(f)
-            if v.get("description"):
-                desc_text = v["description"] + "\n" + desc_text
-            SubElement(offer, "description").text = desc_text[:5000] if len(desc_text) > 5000 else desc_text
+            SubElement(offer, "description").text = ""
 
             SubElement(offer, "barcode")
             weight_val = f.get("Вес", "").replace(" г", "").strip()

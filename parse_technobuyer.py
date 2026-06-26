@@ -243,7 +243,7 @@ def parse_urls_from_file(filepath, max_workers=10):
                     local_variants.append(v)
                 except Exception as e:
                     print(f"  [!] Ошибка варианта: {e}")
-                    with failed_variant_urls_lock:
+                    with failed_urls_lock:
                         failed_variant_urls.add(vurl)
         except Exception as e:
             with lock:

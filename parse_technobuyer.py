@@ -397,8 +397,17 @@ def generate_yandex_kit_xlsx(variants, output_path):
 
     def _pick_grouping(group_variants):
         all_have = lambda key: all(v["features"].get(key, "") for v in group_variants)
+        _is_macbook = any(
+            "macbook" in (v.get("name", "") + " " + v.get("url", "")).lower()
+            or "mac" in v["features"].get("Тип", "").lower()
+            for v in group_variants
+        )
         if all_have("Связь"):
             return ["Цвет", "Объём встроенной памяти", "Тип связи"]
+        if not _is_macbook and all_have("Процессор"):
+            processors = {v["features"].get("Процессор", "") for v in group_variants}
+            if len(processors) > 1:
+                return ["Цвет", "Объём встроенной памяти", "Процессор"]
         return ["Цвет", "Объём встроенной памяти"]
 
     def _category(v):

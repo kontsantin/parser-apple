@@ -313,12 +313,20 @@ def generate_yandex_kit_xlsx(variants, output_path):
     if not variants:
         return 0
 
+    _is_macbook = any(
+        "macbook" in (v.get("name", "") + " " + v.get("url", "")).lower()
+        or "mac" in v["features"].get("Тип", "").lower()
+        for v in variants
+    )
+
     # Feature keys used by the 12 fixed characteristic columns
     FIXED_FEATURE_KEYS = {
         "Цвет", "Встроенная память", "Связь", "Серия", "Процессор", "Диагональ",
         "Разрешение камеры", "Разрешение фронтальной камеры, Мп", "Операционная система",
         "Защита от воды", "Разъём", "Год (модель представлена)", "Бренд",
     }
+    if _is_macbook:
+        FIXED_FEATURE_KEYS.discard("Процессор")
 
     # Collect extra characteristic columns: all features not in fixed columns
     EXTRA_PRIORITY = [
@@ -397,11 +405,6 @@ def generate_yandex_kit_xlsx(variants, output_path):
 
     def _pick_grouping(group_variants):
         all_have = lambda key: all(v["features"].get(key, "") for v in group_variants)
-        _is_macbook = any(
-            "macbook" in (v.get("name", "") + " " + v.get("url", "")).lower()
-            or "mac" in v["features"].get("Тип", "").lower()
-            for v in group_variants
-        )
         if all_have("Связь"):
             return ["Цвет", "Объём встроенной памяти", "Тип связи"]
         if _is_macbook:
@@ -527,7 +530,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 f.get("Встроенная память", ""),
                 f.get("Связь", ""),
                 f.get("Серия", ""),
-                f.get("Процессор", ""),
+                "" if _is_macbook else f.get("Процессор", ""),
                 f.get("Диагональ", ""),
                 f.get("Разрешение камеры", ""),
                 f.get("Разрешение фронтальной камеры, Мп", ""),

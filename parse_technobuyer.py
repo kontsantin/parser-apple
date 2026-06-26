@@ -363,10 +363,15 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 seen_extra.add(key)
                 extra_keys.append(key)
 
-    groups = {}
-    for v in variants:
-        series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
-        groups.setdefault(series_key, []).append(v)
+    if _is_macbook:
+        groups = {}
+        for v in variants:
+            groups.setdefault(v["sku"], [v])
+    else:
+        groups = {}
+        for v in variants:
+            series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
+            groups.setdefault(series_key, []).append(v)
 
     base_ts = int(datetime.now().timestamp() * 1000)
 
@@ -443,7 +448,12 @@ def generate_yandex_kit_xlsx(variants, output_path):
         group_id = str(base_ts + gi)
         series = group_variants[0]["features"].get("Серия", "")
 
-        grouping_cols = _pick_grouping(group_variants)
+        if _is_macbook and len(group_variants) <= 1:
+            grouping_cols = []
+            grouping_chars_str = ""
+        else:
+            grouping_cols = _pick_grouping(group_variants)
+            grouping_chars_str = "; ".join(grouping_cols)
 
         # Deduplicate identical variants first
         seen_hashes = {}
@@ -461,35 +471,35 @@ def generate_yandex_kit_xlsx(variants, output_path):
             print(f"  [!] Пропущено дубликатов: {skipped} (группа {series})")
 
         # Auto-expand grouping if duplicate keys exist within the group
-        safe_extra = [
-            "Диагональ", "Тип дисплея", "Разрешение экрана, пикс",
-            "Тип накопителя", "Ядер процессора", "Ядер графического процессора",
-            "Операционная система", "Размер",
-        ]
-        while True:
-            seen_keys = {}
-            collisions = False
-            for v in deduped:
-                f = v["features"]
-                gkey = _make_grouping_key(f, grouping_cols)
-                if gkey in seen_keys:
-                    collisions = True
+        if not (_is_macbook and len(group_variants) <= 1):
+            safe_extra = [
+                "Диагональ", "Тип дисплея", "Разрешение экрана, пикс",
+                "Тип накопителя", "Ядер процессора", "Ядер графического процессора",
+                "Операционная система", "Размер",
+            ]
+            while True:
+                seen_keys = {}
+                collisions = False
+                for v in deduped:
+                    f = v["features"]
+                    gkey = _make_grouping_key(f, grouping_cols)
+                    if gkey in seen_keys:
+                        collisions = True
+                        break
+                    seen_keys[gkey] = True
+                if not collisions:
                     break
-                seen_keys[gkey] = True
-            if not collisions:
-                break
-            # Try adding one more characteristic that breaks the duplicates
-            expanded = False
-            for ek in safe_extra:
-                if ek not in grouping_cols and any(v["features"].get(ek, "") for v in deduped):
-                    grouping_cols.append(ek)
-                    expanded = True
+                expanded = False
+                for ek in safe_extra:
+                    if ek not in grouping_cols and any(v["features"].get(ek, "") for v in deduped):
+                        grouping_cols.append(ek)
+                        expanded = True
+                        break
+                if not expanded:
                     break
-            if not expanded:
-                break
-        grouping_chars_str = "; ".join(grouping_cols)
-        if len(grouping_cols) > len(_pick_grouping(group_variants)):
-            print(f"  [!] Коллизия группировки! Расширено до: {grouping_chars_str} (группа {series})")
+            grouping_chars_str = "; ".join(grouping_cols)
+            if len(grouping_cols) > len(_pick_grouping(group_variants)):
+                print(f"  [!] Коллизия группировки! Расширено до: {grouping_chars_str} (группа {series})")
 
         for v in deduped:
             f = v["features"]

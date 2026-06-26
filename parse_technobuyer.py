@@ -361,6 +361,48 @@ def generate_yandex_kit_xlsx(variants, output_path):
     if not variants:
         return 0
 
+    # Feature keys used by the 12 fixed characteristic columns
+    FIXED_FEATURE_KEYS = {
+        "Цвет", "Встроенная память", "Связь", "Серия", "Процессор", "Диагональ",
+        "Разрешение камеры", "Разрешение фронтальной камеры, Мп", "Операционная система",
+        "Защита от воды", "Разъём", "Год (модель представлена)", "Бренд",
+    }
+
+    # Collect extra characteristic columns: all features not in fixed columns
+    EXTRA_PRIORITY = [
+        "Тип",
+        "Ядер процессора", "Ядер Neural Engine", "Ядер графического процессора",
+        "Оперативная память", "Тип накопителя", "Поддержка карт памяти",
+        "Тип дисплея", "Разрешение экрана, пикс",
+        "Технологии дисплея", "Плотность пикселей на дюйм", "Яркость, кд/м²",
+        "Контрастность", "Цветовой охват", "Поддержка доп. мониторов",
+        "Беспроводная сеть", "Сотовая и беспроводная сеть",
+        "Поддержка интерфейсов", "Количество HDMI", "Количество Thunderbolt/USB 4",
+        "Диафрагма", "Зум (фото)",
+        "Разрешение видео", "Разрешение замедленного видео",
+        "Разрешение видео фронтальной камеры",
+        "Функции камеры", "Функции фронтальной камеры", "Функции видео",
+        "Защита объектива", "Веб-камера",
+        "Количество микрофонов", "Трекпад", "Аудио",
+        "Датчики", "Навигация",
+        "Тип аккумулятора", "Работа от аккумулятора, часов",
+        "Время работы", "Мощность адаптера", "Разъем питания",
+        "Материал", "Вес", "Размер", "Ширина, мм", "Высота, мм", "Длина, мм",
+        "Гарантия", "Страна производства", "В комплекте",
+    ]
+
+    extra_keys = []
+    seen_extra = set()
+    for key in EXTRA_PRIORITY:
+        if key not in FIXED_FEATURE_KEYS and key not in seen_extra:
+            seen_extra.add(key)
+            extra_keys.append(key)
+    for v in variants:
+        for key in v["features"]:
+            if key not in FIXED_FEATURE_KEYS and key not in seen_extra:
+                seen_extra.add(key)
+                extra_keys.append(key)
+
     groups = {}
     for v in variants:
         src = v.get("source_url", v["url"])
@@ -388,6 +430,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
         "Основная камера", "Фронтальная камера",
         "ОС", "Защита от воды", "Разъём", "Год модели",
     ]
+    fieldnames.extend(extra_keys)
 
     # Map XLSX column names → feature dict keys
     FEATURE_KEY_MAP = {
@@ -461,7 +504,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 "",                             # KIT ID* — пусто для новых
                 _build_product_name(v, f, series),  # Название товара*
                 v["sku"],                       # Артикул
-                _build_features_description(f),  # Описание товара
+                v.get("description", "")[:5000] if v.get("description") else "",  # Описание товара
                 "",                             # Штрихкод
                 "Опубликован",                  # Статус
                 old_price,                      # Цена до скидки, руб.
@@ -501,6 +544,8 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 f.get("Разъём", ""),
                 f.get("Год (модель представлена)", ""),
             ]
+            # Extra characteristic columns
+            row.extend(f.get(key, "") for key in extra_keys)
             for ci, val in enumerate(row, 1):
                 ws.cell(row=ri, column=ci, value=val)
             ri += 1

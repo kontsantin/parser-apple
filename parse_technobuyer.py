@@ -399,10 +399,6 @@ def generate_yandex_kit_xlsx(variants, output_path):
         all_have = lambda key: all(v["features"].get(key, "") for v in group_variants)
         if all_have("Связь"):
             return ["Цвет", "Объём встроенной памяти", "Тип связи"]
-        if all_have("Процессор"):
-            processors = {v["features"].get("Процессор", "") for v in group_variants}
-            if len(processors) > 1:
-                return ["Цвет", "Объём встроенной памяти", "Процессор"]
         return ["Цвет", "Объём встроенной памяти"]
 
     def _category(v):

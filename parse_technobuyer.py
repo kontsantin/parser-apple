@@ -325,8 +325,6 @@ def generate_yandex_kit_xlsx(variants, output_path):
         "Разрешение камеры", "Разрешение фронтальной камеры, Мп", "Операционная система",
         "Защита от воды", "Разъём", "Год (модель представлена)", "Бренд",
     }
-    if _is_macbook:
-        FIXED_FEATURE_KEYS.discard("Процессор")
 
     # Collect extra characteristic columns: all features not in fixed columns
     EXTRA_PRIORITY = [
@@ -363,15 +361,10 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 seen_extra.add(key)
                 extra_keys.append(key)
 
-    if _is_macbook:
-        groups = {}
-        for v in variants:
-            groups.setdefault(v["sku"], [v])
-    else:
-        groups = {}
-        for v in variants:
-            series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
-            groups.setdefault(series_key, []).append(v)
+    groups = {}
+    for v in variants:
+        series_key = v["features"].get("Серия", v.get("source_url", v["url"]))
+        groups.setdefault(series_key, []).append(v)
 
     base_ts = int(datetime.now().timestamp() * 1000)
 
@@ -412,11 +405,6 @@ def generate_yandex_kit_xlsx(variants, output_path):
         all_have = lambda key: all(v["features"].get(key, "") for v in group_variants)
         if all_have("Связь"):
             return ["Цвет", "Объём встроенной памяти", "Тип связи"]
-        if _is_macbook:
-            base = ["Цвет", "Объём встроенной памяти"]
-            if all_have("Оперативная память"):
-                base.append("Оперативная память")
-            return base
         if all_have("Процессор"):
             processors = {v["features"].get("Процессор", "") for v in group_variants}
             if len(processors) > 1:
@@ -448,12 +436,8 @@ def generate_yandex_kit_xlsx(variants, output_path):
         group_id = str(base_ts + gi)
         series = group_variants[0]["features"].get("Серия", "")
 
-        if _is_macbook and len(group_variants) <= 1:
-            grouping_cols = []
-            grouping_chars_str = ""
-        else:
-            grouping_cols = _pick_grouping(group_variants)
-            grouping_chars_str = "; ".join(grouping_cols)
+        grouping_cols = _pick_grouping(group_variants)
+        grouping_chars_str = "; ".join(grouping_cols)
 
         # Deduplicate identical variants first
         seen_hashes = {}
@@ -471,35 +455,34 @@ def generate_yandex_kit_xlsx(variants, output_path):
             print(f"  [!] Пропущено дубликатов: {skipped} (группа {series})")
 
         # Auto-expand grouping if duplicate keys exist within the group
-        if not (_is_macbook and len(group_variants) <= 1):
-            safe_extra = [
-                "Диагональ", "Тип дисплея", "Разрешение экрана, пикс",
-                "Тип накопителя", "Ядер процессора", "Ядер графического процессора",
-                "Операционная система", "Размер",
-            ]
-            while True:
-                seen_keys = {}
-                collisions = False
-                for v in deduped:
-                    f = v["features"]
-                    gkey = _make_grouping_key(f, grouping_cols)
-                    if gkey in seen_keys:
-                        collisions = True
-                        break
-                    seen_keys[gkey] = True
-                if not collisions:
+        safe_extra = [
+            "Диагональ", "Тип дисплея", "Разрешение экрана, пикс",
+            "Оперативная память", "Тип накопителя", "Ядер процессора",
+            "Ядер графического процессора", "Операционная система", "Размер",
+        ]
+        while True:
+            seen_keys = {}
+            collisions = False
+            for v in deduped:
+                f = v["features"]
+                gkey = _make_grouping_key(f, grouping_cols)
+                if gkey in seen_keys:
+                    collisions = True
                     break
-                expanded = False
-                for ek in safe_extra:
-                    if ek not in grouping_cols and any(v["features"].get(ek, "") for v in deduped):
-                        grouping_cols.append(ek)
-                        expanded = True
-                        break
-                if not expanded:
+                seen_keys[gkey] = True
+            if not collisions:
+                break
+            expanded = False
+            for ek in safe_extra:
+                if ek not in grouping_cols and any(v["features"].get(ek, "") for v in deduped):
+                    grouping_cols.append(ek)
+                    expanded = True
                     break
-            grouping_chars_str = "; ".join(grouping_cols)
-            if len(grouping_cols) > len(_pick_grouping(group_variants)):
-                print(f"  [!] Коллизия группировки! Расширено до: {grouping_chars_str} (группа {series})")
+            if not expanded:
+                break
+        grouping_chars_str = "; ".join(grouping_cols)
+        if len(grouping_cols) > len(_pick_grouping(group_variants)):
+            print(f"  [!] Коллизия группировки! Расширено до: {grouping_chars_str} (группа {series})")
 
         for v in deduped:
             f = v["features"]
@@ -540,7 +523,7 @@ def generate_yandex_kit_xlsx(variants, output_path):
                 f.get("Встроенная память", ""),
                 f.get("Связь", ""),
                 f.get("Серия", ""),
-                "" if _is_macbook else f.get("Процессор", ""),
+                f.get("Процессор", ""),
                 f.get("Диагональ", ""),
                 f.get("Разрешение камеры", ""),
                 f.get("Разрешение фронтальной камеры, Мп", ""),
